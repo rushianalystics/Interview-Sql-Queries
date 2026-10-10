@@ -1,0 +1,40 @@
+1) Write a SQL query to find employees who do not have a manager.
+
+select emp_name , manager_id 
+from employees
+having manager_id is null;
+
+2) Write a SQL query to find employees whose salary is between 40,000 and 60,000.
+
+select emp_name , salary
+from employees
+where salary between 40000 and 60000;
+
+3) Write a SQL query to find the department with the second-highest average salary.
+
+select d.department_name , avg(e.salary) as avg_salary
+from employees e
+right join departments d
+on e.department_id = d.department_id
+group by d.department_name
+order by avg(e.salary) desc
+limit 1 offset 1;
+
+4) Write a SQL query to find employees whose salary is greater than the highest salary in the HR department.
+
+select e.emp_name , e.salary
+from employees e
+where e.salary > (select max(e2.salary) from employees e2
+                  INNER join departments d
+				  on e2.department_id = d.department_id
+                   where department_name = "HR");
+
+5) Write a SQL query to find the department with the maximum number of employees.
+
+select d.department_name , count(e.emp_id) as number_of_emp
+from employees e
+right join departments d
+on e.department_id = d.department_id
+group by d.department_name
+order by count(e.emp_id) desc
+limit 1;
