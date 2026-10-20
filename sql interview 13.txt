@@ -1,0 +1,42 @@
+1) Write a SQL query to find the second-highest salary in the employees table.
+
+select emp_name , salary 
+from employees
+where salary = (select max(salary) from employees
+                where salary < (select max(salary) from employees));
+
+2) Write a SQL query to find the highest-paid employee in each department.
+
+select emp_name , salary , department_name
+from (select e.emp_name , e.salary , d.department_name,
+dense_rank()over(partition by d.department_name order by e.salary desc) as rnk
+from employees e
+inner join departments d
+on e.department_id = d.department_id
+) A
+where rnk = 1;
+
+3) Write a SQL query to find employees whose salary is greater than the average salary of their department.
+
+select e.emp_name , e.salary 
+from employees e
+where e.salary > (select avg(e2.salary) from employees e2
+                   where e2.department_id = e.department_id);
+
+4) Write a SQL query to find the department with the highest average salary.
+
+select d.department_name , avg(e.salary) as dept_avg_salary
+from departments d
+left join employees e
+on e.department_id = d.department_id
+group by d.department_name
+order by avg(e.salary) desc
+limit 1;
+
+5) Write a SQL query to find the number of employees in each department, including departments that have zero employees.
+
+select count(e.emp_id) as nuofemp , d.department_name 
+from employees e
+right join departments d
+on e.department_id = d.department_id
+group by d.department_name;
