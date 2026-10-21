@@ -1,0 +1,37 @@
+1) Write a SQL query to find employees whose names start with the letter 'R'.
+
+select emp_name from employees
+where emp_name like "R%";
+
+2) Write a SQL query to find the department-wise highest and lowest salary.
+
+select d.department_name , max(e.salary) as high_salary , min(e.salary) as lower_salary
+from employees e
+inner join departments d
+on e.department_id = d.department_id
+group by department_name ;
+
+3) Write a SQL query to find employees whose salary is above ₹50,000 and who joined after 1 January 2022.
+
+select emp_name , salary , joining_date
+from employees
+where salary > 50000 and joining_date > "2021-1-1";
+
+4) Write a SQL query to find the average salary for each department and show only departments with an average salary above ₹50,000.
+
+select d.department_name , avg(e.salary) as avg_salary
+from employees e
+right join departments d
+on e.department_id = d.department_id
+group by d.department_name
+having avg(e.salary) > 50000;
+
+5) Write a SQL query to find the employees who earn more than their manager.
+
+select e.emp_name , e.salary,
+m.emp_name as manager_nname ,
+m.salary as manager_salary
+from employees e
+join employees m
+on e.manager_id = m.emp_id
+where e.salary > m.salary;
