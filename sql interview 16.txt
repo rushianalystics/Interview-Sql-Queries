@@ -1,0 +1,50 @@
+1) Find employees whose salary is greater than the second-highest salary in their department.
+
+select emp_name , salary , department_name 
+from (
+select e.emp_name , e.salary , d.department_name,
+dense_rank()over(partition by d.department_name order by e.salary desc) as rnk
+from employees e
+join departments d
+on e.department_id = d.department_id
+)A
+where rnk < 2;
+
+2) Find employees whose salary is in the top 10% of salaries in the company.
+
+SELECT emp_name, salary
+FROM (
+    SELECT emp_name,
+           salary,
+           PERCENT_RANK() OVER (ORDER BY salary DESC) AS salary_rank
+    FROM employees
+) AS ranked
+WHERE salary_rank <= 0.10;
+
+3) Find each department's highest-paid employee and their salary, including all employees tied for the highest salary.
+
+select emp_name , salary , department_name 
+from (
+select e.emp_name , e.salary , d.department_name,
+dense_rank()over(partition by d.department_name order by e.salary desc) as rnk
+from employees e
+left join departments d
+on e.department_id = d.department_id
+) A
+where rnk = 1;
+
+4) Find employees whose salary is higher than the average salary of employees hired in the same year.
+
+select emp_name , salary , year(joining_date) 
+from employees e
+where salary > (select avg(e2.salary) from employees e2
+                 where year(e2.joining_date) = year(e.joining_date));
+
+5) Find departments where the lowest salary is greater than ₹40,000.
+
+select d.department_name , min(e.salary) as lowest_salary
+from employees e
+right join departments d
+on e.department_id = d.department_id
+group by d.department_name 
+having lowest_salary > 40000;
