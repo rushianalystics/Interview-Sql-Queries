@@ -1,0 +1,48 @@
+1) Find the top 2 highest-paid employees in each department, including ties in salary.
+
+select emp_name , salary , department_name
+from ( select e.emp_name , e.salary , d.department_name ,
+dense_rank()over(partition by d.department_name order by e.salary desc) as rnk
+from employees e
+join departments d
+on e.department_id = d.department_id
+) A
+where rnk <= 2;
+
+2) Classify employees' salaries into three categories:
+- Salary ≥ ₹60,000 → High
+- Salary ≥ ₹40,000 but < ₹60,000 → Medium
+- Salary < ₹40,000 → Low
+Display the employee name, salary, and salary category.
+
+select emp_name , salary , 
+case when salary >= 60000 then "high"
+when salary >= 40000 then "medium"
+else "low"
+end as salary_category
+from employees;
+
+3) Find the number of employees hired in each year. Display the joining year and employee count, sorted by year in descending order.
+
+select year(joining_date) as joining_year , count(emp_id) as emp_count
+from employees
+group by year(joining_date)
+order by year(joining_date) desc;
+
+4) Find employees who are not assigned to any department. Display their employee ID and employee name.
+
+select e.emp_name , e.emp_id from employees e
+left join departments d
+on e.department_id = d.department_id
+where d.department_id is null;
+
+5) Find departments where the average salary is greater than ₹50,000. Display the department name and average salary.
+
+select d.department_name , avg(e.salary) as avg_salary
+from employees e
+right join departments d
+on e.department_id = d.department_id
+group by department_name
+having avg(e.salary) > 50000;
+
+	
