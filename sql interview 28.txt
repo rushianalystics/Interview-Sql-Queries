@@ -1,0 +1,41 @@
+1) Write an SQL query to find the department with the second-highest total salary.
+
+select d.department_name , sum(e.salary) as total_salary
+from employees e
+join departments d
+on e.department_id = d.department_id
+group by d.department_name
+order by sum(e.salary) desc
+limit 1 offset 1;
+
+2) Write an SQL query to find employees who do not belong to any department.
+
+select d.department_id , e.emp_name
+from employees e
+left join departments d
+on e.department_id = d.department_id
+where d.department_id is null;
+
+3) Write an SQL query to find employees whose salary is higher than their manager's salary.
+
+select e.emp_name as emp_name ,
+e.salary as emp_salary,
+m.emp_name as manager_name,
+m.salary as manager_salary
+from employees e
+join employees m
+on e.manager_id = m.emp_id
+where e.salary > m.salary;
+
+4) Find employees who have the same salary within the same department.
+
+SELECT
+    e1.emp_name AS employee_1,
+    e2.emp_name AS employee_2,
+    e1.salary,
+    e1.department_id
+FROM employees e1
+JOIN employees e2
+    ON e1.department_id = e2.department_id
+    AND e1.salary = e2.salary
+    AND e1.emp_id < e2.emp_id;
