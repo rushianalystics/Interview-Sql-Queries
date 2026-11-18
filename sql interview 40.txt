@@ -1,0 +1,46 @@
+1) Write an SQL query to find departments that have no employees.
+
+select d.department_name , e.emp_id
+from employees e
+right join departments d
+on e.department_id = d.department_id
+where e.emp_id is null;
+
+2) Write an SQL query to find the total salary paid by each department, including departments that have zero employees.
+
+select d.department_name , sum(e.salary) as total_salary 
+from employees e
+right join  departments d
+on e.department_id = d.department_id
+group by d.department_name;
+
+3) Write an SQL query to find the employees who earn more than the average salary of their department, but less than the highest salary in the company.
+
+SELECT
+    e.emp_name,
+    d.department_name,
+    e.salary
+FROM employees e
+JOIN departments d
+    ON e.department_id = d.department_id
+WHERE e.salary > (
+    SELECT AVG(e2.salary)
+    FROM employees e2
+    WHERE e2.department_id = e.department_id
+)
+AND e.salary < (
+    SELECT MAX(salary)
+    FROM employees
+);
+
+4) Write an SQL query to find the second-highest paid employee in each department, including their employee name, department name, and salary.
+
+select emp_name , department_name , salary
+from (
+select e.emp_name , d.department_name , e.salary,
+dense_rank()over(partition by department_name order by e.salary desc) as rnk
+from employees e
+join departments d
+on e.department_id = d.department_id
+) A
+where rnk = 2;
