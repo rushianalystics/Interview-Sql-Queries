@@ -1,0 +1,33 @@
+1) Write an SQL query to find employees who have the same joining date.
+
+select emp_name , joining_date
+from employees
+where joining_date in (select joining_date
+                        from employees 
+                        group by joining_date
+                        having count(*) > 1);
+
+2) Write an SQL query to find the department-wise percentage of employees earning more than ₹50,000.
+
+SELECT
+    d.department_name,
+    COUNT(CASE WHEN e.salary > 50000 THEN 1 END) * 100.0
+    / COUNT(e.emp_id) AS percentage
+FROM employees e
+JOIN departments d
+    ON e.department_id = d.department_id
+GROUP BY d.department_name;
+
+3) Write an SQL query to find the employees whose salary is in the top 10% of all employee salaries.
+
+SELECT emp_name, salary
+FROM (
+    SELECT
+        emp_name,
+        salary,
+        PERCENT_RANK() OVER (
+            ORDER BY salary DESC
+        ) AS salary_rank
+    FROM employees
+) A
+WHERE salary_rank <= 0.10;
