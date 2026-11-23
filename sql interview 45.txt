@@ -1,0 +1,24 @@
+1) Write an SQL query to find the second-highest salary from the Employees table.
+
+select emp_name , salary
+from (select emp_name , salary,
+dense_rank()over(order by salary desc) as rnk
+from employees
+) A
+where rnk = 2;
+
+2) Find employees who are not assigned to any department.
+
+select e.emp_name , d.department_name 
+from employees e
+left join departments d
+on e.department_id = d.department_id
+where d.department_id is null;
+
+3) Find the average salary of each department. Display department name and average salary.
+
+select d.department_name , avg(e.salary) as avg_salary
+from employees e
+join departments d
+on e.department_id = d.department_id
+group by d.department_name;
